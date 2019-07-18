@@ -1,6 +1,7 @@
 package CatalystBasic::Controller::Root;
 use Moose;
 use namespace::autoclean;
+use Data::Dumper;
 
 BEGIN { extends 'Catalyst::Controller' }
 
@@ -33,6 +34,19 @@ sub index :Path :Args(0) {
 
     # Hello World
     $c->response->body( $c->welcome_message );
+}
+
+sub hello :Global {
+    my ( $self, $c ) = @_;
+    $c->stash->{data} = 'Huy';
+    $c->log->info("Starting the foreach loop here");
+    # $c->stash(template => 'hello.tt', dataTwo => 'Hoang');    
+}
+
+sub list :Local {
+    my ( $self, $c ) = @_;
+    
+    $c->stash(template => 'list.tt')
 }
 
 =head2 default
