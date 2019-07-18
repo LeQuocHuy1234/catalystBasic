@@ -55,6 +55,5 @@ Catalyst Contributors, see Catalyst.pm
 
 This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
-
 =cut
 

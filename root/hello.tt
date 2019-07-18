@@ -1,0 +1,3 @@
+<p>
+    This is a TT view template of [%data%] [%dataTwo%], called '[% template.name %]'.
+</p>
