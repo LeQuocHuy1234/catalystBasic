@@ -61,6 +61,21 @@ sub default :Path {
     $c->response->status(404);
 }
 
+sub auto : Private {
+    my ( $self, $c ) = @_;
+
+    if ($c->controller eq $c->controller('login')) {
+        return 1;
+    }
+
+    if (!$c->user_exists) {
+        $c->response->redirect($c->uri_for('/login'));
+        return 0;
+    }
+
+    return 1;
+}
+
 =head2 end
 
 Attempt to render a view, if needed.

@@ -1,12 +1,12 @@
 use utf8;
-package CatalystBasic::Schema::Result::User;
+package CatalystBasic::Schema::Result::Admin;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
 =head1 NAME
 
-CatalystBasic::Schema::Result::User
+CatalystBasic::Schema::Result::Admin
 
 =cut
 
@@ -30,28 +30,33 @@ extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 TABLE: C<user>
+=head1 TABLE: C<admin>
 
 =cut
 
-__PACKAGE__->table("user");
+__PACKAGE__->table("admin");
 
 =head1 ACCESSORS
 
 =head2 id
 
   data_type: 'integer'
-  extra: {unsigned => 1}
   is_auto_increment: 1
   is_nullable: 0
 
-=head2 name
+=head2 username
 
   data_type: 'varchar'
   is_nullable: 0
   size: 255
 
-=head2 address
+=head2 password
+
+  data_type: 'varchar'
+  is_nullable: 0
+  size: 255
+
+=head2 email
 
   data_type: 'varchar'
   is_nullable: 0
@@ -61,15 +66,12 @@ __PACKAGE__->table("user");
 
 __PACKAGE__->add_columns(
   "id",
-  {
-    data_type => "integer",
-    extra => { unsigned => 1 },
-    is_auto_increment => 1,
-    is_nullable => 0,
-  },
-  "name",
+  { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
+  "username",
   { data_type => "varchar", is_nullable => 0, size => 255 },
-  "address",
+  "password",
+  { data_type => "varchar", is_nullable => 0, size => 255 },
+  "email",
   { data_type => "varchar", is_nullable => 0, size => 255 },
 );
 
@@ -85,10 +87,27 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("id");
 
+=head1 RELATIONS
+
+=head2 admin_role
+
+Type: might_have
+
+Related object: L<CatalystBasic::Schema::Result::AdminRole>
+
+=cut
+
+__PACKAGE__->might_have(
+  "admin_role",
+  "CatalystBasic::Schema::Result::AdminRole",
+  { "foreign.admin_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 
 # Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-07-19 16:21:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zRqBufz87EqQyi/wsP0KmQ
-
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zEdJ0PZRvXLuqAl+Qxogpw
+__PACKAGE__->many_to_many(roles => 'admin_role', 'role');
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

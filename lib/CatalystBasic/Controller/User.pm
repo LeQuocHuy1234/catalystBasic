@@ -21,17 +21,15 @@ Catalyst Controller.
 
 =cut
 
-sub index :Path :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->response->body('Matched CatalystBasic::Controller::User in User.');
-}
-
 sub list :Path {
     my ( $self, $c ) = @_;
-    $c->log->info('debug code');
-    $c->stash(users => [$c->model('DB::User')->all]);
-    $c->stash(template => 'user/list.tt');
+    if($c->check_user_roles('admin')) {
+        $c->log->info('debug code');
+        $c->stash(users => [$c->model('DB::User')->all]);
+        $c->stash(template => 'user/list.tt');
+    } else {
+        $c->response->body('Khong cap quyen!');
+    }
 }
 
 
@@ -85,9 +83,13 @@ sub store :Chained('/') :PathPart('user/store') :Args(0) {
 sub delete :Chained('/') :PathPart('user/delete') :Args(1) {
     my ($self, $c, $id) = @_;
 
-    $c->model('DB::User')->find($id)->delete;
+    if ($c->check_user_roles('delete')) {
+        $c->model('DB::User')->find($id)->delete;
 
-    $c->response->redirect($self->action_for('list'));
+        $c->response->redirect($self->action_for('list'));
+    } else {
+        $c->response->body('Khong cap quyen!');
+    }
 }
 
 sub edit :Chained('/') :PathPart('user/edit') :Args(1) {
