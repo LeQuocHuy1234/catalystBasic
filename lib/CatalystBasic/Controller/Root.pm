@@ -1,6 +1,7 @@
 package CatalystBasic::Controller::Root;
 use Moose;
 use namespace::autoclean;
+use Data::Dumper;
 
 BEGIN { extends 'Catalyst::Controller' }
 
@@ -35,6 +36,19 @@ sub index :Path :Args(0) {
     $c->response->body( $c->welcome_message );
 }
 
+sub hello :Global {
+    my ( $self, $c ) = @_;
+    $c->stash->{data} = 'Huy';
+    $c->log->info("Starting the foreach loop here");
+    # $c->stash(template => 'hello.tt', dataTwo => 'Hoang');    
+}
+
+sub list :Local {
+    my ( $self, $c ) = @_;
+    
+    $c->stash(template => 'list.tt')
+}
+
 =head2 default
 
 Standard 404 error page
@@ -45,6 +59,21 @@ sub default :Path {
     my ( $self, $c ) = @_;
     $c->response->body( 'Page not found' );
     $c->response->status(404);
+}
+
+sub auto : Private {
+    my ( $self, $c ) = @_;
+
+    if ($c->controller eq $c->controller('login')) {
+        return 1;
+    }
+
+    if (!$c->user_exists) {
+        $c->response->redirect($c->uri_for('/login'));
+        return 0;
+    }
+
+    return 1;
 }
 
 =head2 end
