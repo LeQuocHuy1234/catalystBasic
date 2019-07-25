@@ -27,18 +27,25 @@ BEGIN { extends 'Catalyst::Controller::REST' }
 
 sub user :Local :ActionClass('REST'){}
 
-# sub user_GET {
-#   my ( $self, $c ) = @_;
+sub user_GET {
+      my ( $self, $c ) = @_;
 
-#   my @result = $c->model('DB::User')->all;
-
-#   $self->status_ok(
-#         $c,
-#         entity => {
-#             data => @result,
-#       },
-#   );
-# }
+      my @result = $c->model('DB::User')->all;
+      my %object;
+      foreach (@result) {
+            $object{$_->id} = {
+                  id => $_->id,
+                  name => $_->name,
+                  address => $_->address
+            }
+      }
+      $self->status_ok(
+            $c,
+            entity => {
+                  data => \%object
+            },
+      );
+}
 
 sub user_POST {
       my ( $self, $c, $id ) = @_;
